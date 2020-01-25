@@ -1,7 +1,6 @@
 package com.wildcodeschool.wildandwizard.controller;
 
-import com.wildcodeschool.wildandwizard.entity.Wizard;
-import com.wildcodeschool.wildandwizard.repository.WizardRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -9,10 +8,30 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.wildcodeschool.wildandwizard.entity.Wizard;
+import com.wildcodeschool.wildandwizard.repository.WizardDao;
+
 @Controller
 public class WizardController {
 
-    private WizardRepository repository = new WizardRepository();
+    // Step 1: remove the tight coupling
+	//private WizardRepository repository = new WizardRepository();
+	
+	// Step 2: Annotate the WizardRepository, that Spring considers it for injection, see that class
+	
+	// Step 3: Let Spring provide us with an instance of a implementation of the WizardDao interface
+	//@Autowired
+	//private WizardDao repository;
+	
+	// Step 3a: Alternative: the contructor based injection: annotate the constructor instead
+	private WizardDao repository;
+	
+	@Autowired // the annotation can also be omitted at constructor based injection
+	public WizardController(WizardDao repository) {
+		this.repository = repository;
+	}
+	
+	
 
     @GetMapping("/wizards")
     public String getAll(Model model) {
